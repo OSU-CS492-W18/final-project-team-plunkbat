@@ -16,21 +16,23 @@
             android:id="@+id/tv_player_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
             android:text="@string/username" />
 
         <TextView
             android:id="@+id/tv_player"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="playername" />
+            android:text="Shroud" />
     </LinearLayout>
 
     <TextView
-        android:id="@+id/textView41"
-        android:layout_width="match_parent"
+        android:id="@+id/tv_game_type"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        android:gravity="center"/>
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="SOLO/DUO/SQUAD" />
 
     <Space
         android:layout_width="match_parent"
