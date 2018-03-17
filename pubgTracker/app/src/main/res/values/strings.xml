@@ -1,3 +1,26 @@
 <resources>
-    <string name="app_name">pubgTracker</string>
+
+    <string name="app_name">Fortnite Tracker</string>
+
+    <!-- Strings for Main Activity -->
+    <string name="hint">Enter a username...</string>
+    <string name="solo">Solo</string>
+    <string name="duo">Duo</string>
+    <string name="squad">Squad</string>
+    <string name="last7">Last 7</string>
+    <string name="last_searches">Last 5 Searches:</string>
+
+    <!-- Strings for Stats Activity -->
+    <string name="username">Player:</string>
+    <string name="score">Score:</string>
+    <string name="kills">Kills:</string>
+    <string name="wins">Wins:</string>
+    <string name="kill_death">K/D:</string>
+    <string name="win_percent">Win %:</string>
+    <string name="time_played">Time Played:</string>
+    <string name="kills_per_min">K/PMin:</string>
+    <string name="kills_per_match">K/PMatch:</string>
+    <string name="avg_match_time">Avg Match Time:</string>
+    <string name="score_per_match">Score Per Match:</string>
+
 </resources>

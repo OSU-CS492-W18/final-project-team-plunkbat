@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\Talian\Desktop\WI17\CS492\final-project-team-plunkbat\pubgTracker\app\app.iml" filepath="C:\Users\Talian\Desktop\WI17\CS492\final-project-team-plunkbat\pubgTracker\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/pubgTracker.iml" filepath="$PROJECT_DIR$/pubgTracker.iml" />
+      <module fileurl="file://C:\Users\Talian\Desktop\WI17\CS492\final-project-team-plunkbat\pubgTracker\pubgTracker.iml" filepath="C:\Users\Talian\Desktop\WI17\CS492\final-project-team-plunkbat\pubgTracker\pubgTracker.iml" />
     </modules>
   </component>
 </project>
