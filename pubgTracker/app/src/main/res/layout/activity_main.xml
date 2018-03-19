@@ -32,40 +32,47 @@
             android:layout_width="50dp"
             android:layout_height="49dp"
             app:srcCompat="@android:drawable/ic_search_category_default" />
+
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/checkbox_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal"
-        android:layout_marginBottom="5sp">
+        <!--<LinearLayout-->
+            <!--android:id="@+id/checkbox_layout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:gravity="center_horizontal"-->
+            <!--android:layout_marginBottom="5sp">-->
 
-        <CheckBox
-            android:id="@+id/checkbox_solo"
-            android:text="@string/solo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            <!--<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:foregroundGravity="center_horizontal"-->
+                <!--android:orientation="horizontal">-->
 
-        <CheckBox
-            android:id="@+id/checkbox_duo"
-            android:text="@string/duo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+                <!--<RadioButton-->
+                    <!--android:id="@+id/radio_solo"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:onClick="onRadioButtonClicked"-->
+                    <!--android:text="@string/solo" />-->
 
-        <CheckBox
-            android:id="@+id/checkbox_squad"
-            android:text="@string/squad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+                <!--<RadioButton-->
+                    <!--android:id="@+id/radio_duo"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:onClick="onRadioButtonClicked"-->
+                    <!--android:text="@string/duo" />-->
 
-        <CheckBox
-            android:id="@+id/checkbox_last7"
-            android:text="@string/last7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
+                <!--<RadioButton-->
+                    <!--android:id="@+id/radio_squad"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:onClick="onRadioButtonClicked"-->
+                    <!--android:text="@string/squad" />-->
+
+            <!--</RadioGroup>-->
+        <!--</LinearLayout>-->
 
     <TextView
         android:id="@+id/textView"

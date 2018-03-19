@@ -7,8 +7,8 @@
     <string name="solo">Solo</string>
     <string name="duo">Duo</string>
     <string name="squad">Squad</string>
-    <string name="last7">Last 7</string>
     <string name="last_searches">Last 5 Searches:</string>
+
 
     <!-- Strings for Stats Activity -->
     <string name="username">Player:</string>
@@ -22,5 +22,7 @@
     <string name="kills_per_match">K/PMatch:</string>
     <string name="avg_match_time">Avg Match Time:</string>
     <string name="score_per_match">Score Per Match:</string>
+
+
 
 </resources>
