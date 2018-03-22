@@ -1,5 +1,6 @@
 package com.mobiledev.pubgtracker;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,6 +14,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 import java.io.IOException;
@@ -34,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.Item
     TrackAdapter mAdapter;
     SQLiteDatabase mDB;
 
+    EditText enteredPlayer;
+
     SearchContract mSearchContract;
 
     @Override
@@ -44,15 +48,26 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.Item
         DBHelper dbHelper = new DBHelper(this);
         mDB = dbHelper.getWritableDatabase();
         loadData();
+        enteredPlayer = (EditText)findViewById(R.id.et_search_box);
 
         ImageButton searchButton = (ImageButton)findViewById(R.id.button_search);
+
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent statsIntent = new Intent(MainActivity.this, StatsActivity.class);
-                startActivity(statsIntent);
-                    //mDB.insert("savedPlayers", "THIS NEEDS TO BE text entered by player", null);
+
+                String searchQuery = enteredPlayer.getText().toString();
+
+                if (!TextUtils.isEmpty(searchQuery)) {
                     //new trackerSearch().execute();
+                    // Check if the query returned anything before adding it to the DB
+                    ContentValues row = new ContentValues();
+                    row.put(SearchContract.SavedRepos.COLUMN_FULL_NAME, searchQuery);
+                    mDB.insert(SearchContract.SavedRepos.TABLE_NAME, null, row);
+                    //Intent statsIntent = new Intent(MainActivity.this, StatsActivity.class);
+                    //startActivity(statsIntent);
+                }
+
             }
         });
     }

@@ -5,7 +5,9 @@ import android.provider.BaseColumns;
  */
 
 public class SearchContract {
+
     private SearchContract() {}
+
     public static class SavedRepos implements BaseColumns {
         public static final String TABLE_NAME = "savedPlayers";
         public static final String COLUMN_FULL_NAME = "Players";
