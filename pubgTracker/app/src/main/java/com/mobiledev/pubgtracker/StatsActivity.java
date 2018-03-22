@@ -1,7 +1,9 @@
 package com.mobiledev.pubgtracker;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 /**
@@ -22,6 +24,7 @@ public class StatsActivity extends AppCompatActivity {
     private TextView tvKPMin;
     private TextView tvKPMatch;
     private TextView tvScorePerMatch;
+    private RadioGroup rgGameType;
 
 
     @Override
@@ -29,6 +32,14 @@ public class StatsActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stats_activity);
+
+        //Intent intent = getIntent();
+        //if (intent != null && intent.hasExtra(GitHubUtils.EXTRA_SEARCH_RESULT)) {
+        //    mSearchResult = (GitHubUtils.SearchResult) intent.getSerializableExtra(GitHubUtils.EXTRA_SEARCH_RESULT);
+        //    mTVSearchResultName.setText(mSearchResult.fullName);
+        //    mTVSearchResultStars.setText(String.valueOf(mSearchResult.stars));
+        //    mTVSearchResultDescription.setText(mSearchResult.description);
+        //}
 
         tvPlayerName = (TextView)findViewById(R.id.tv_player_name);
         tvTimePlayed = (TextView)findViewById(R.id.tv_time_played);
@@ -41,5 +52,22 @@ public class StatsActivity extends AppCompatActivity {
         tvKPMin = (TextView)findViewById(R.id.tv_kpmin);
         tvKPMatch = (TextView)findViewById(R.id.tv_kpmatch);
         tvScorePerMatch = (TextView)findViewById(R.id.tv_score_per_match);
+
+        rgGameType = (RadioGroup)findViewById(R.id.rd_gametype);
+
+        rgGameType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                if(checkedId == R.id.radio_solo){
+
+                } else if (checkedId == R.id.radio_duo){
+
+                } else if (checkedId == R.id.radio_squad){
+
+                }
+            }
+        });
     }
 }

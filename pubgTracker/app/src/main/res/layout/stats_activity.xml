@@ -47,16 +47,18 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            <RadioGroup
+                xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:id="@+id/rd_gametype"
+                android:checkedButton="@+id/radio_solo">
 
                 <RadioButton
                     android:id="@+id/radio_solo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="onRadioButtonClicked"
                     android:text="@string/solo"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp" />
@@ -66,7 +68,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="25sp"
-                    android:onClick="onRadioButtonClicked"
                     android:text="@string/duo"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp" />
@@ -76,7 +77,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="25sp"
-                    android:onClick="onRadioButtonClicked"
                     android:text="@string/squad"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp" />
