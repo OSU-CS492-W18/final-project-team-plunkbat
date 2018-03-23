@@ -11,5 +11,6 @@ public class SearchContract {
     public static class SavedPlayers implements BaseColumns {
         public static final String TABLE_NAME = "savedPlayers";
         public static final String COLUMN_PLAYERS = "Players";
+        public static final String COLUMN_TIMESTAMP = "timestamp";
     }
 }

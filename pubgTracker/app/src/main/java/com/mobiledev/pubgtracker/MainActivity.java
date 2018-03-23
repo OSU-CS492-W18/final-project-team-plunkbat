@@ -25,13 +25,16 @@ import com.mobiledev.pubgtracker.utils.FortniteParser;
 import com.mobiledev.pubgtracker.utils.SearchContract;
 
 //Main page,search bar allows to search for user and click by name.
-public class MainActivity extends AppCompatActivity implements TrackAdapter.ItemClickListener {
+public class MainActivity extends AppCompatActivity implements TrackAdapter.OnSavedPlayerClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
     String BASE_URL = "https://api.fortnitetracker.com/v1/profile/pc/";
     String resultJSON;
+
+    RecyclerView mSavedPlayerRV;
     TrackAdapter mAdapter;
+
     SQLiteDatabase mDB;
     FortniteParser.StatObject object = new FortniteParser.StatObject();
     EditText enteredPlayer;
@@ -43,9 +46,17 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.Item
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mSavedPlayerRV = findViewById(R.id.rv_last_searches);
+        mSavedPlayerRV.setLayoutManager(new LinearLayoutManager(this));
+        mSavedPlayerRV.setHasFixedSize(true);
+
         DBHelper dbHelper = new DBHelper(this);
         mDB = dbHelper.getWritableDatabase();
-        loadData();
+
+        mAdapter = new TrackAdapter(this);
+        mAdapter.updateSavedPlayers(loadData());
+        mSavedPlayerRV.setAdapter(mAdapter);
+
         enteredPlayer = (EditText) findViewById(R.id.et_search_box);
 
         ImageButton searchButton = (ImageButton) findViewById(R.id.button_search);
@@ -65,8 +76,9 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.Item
     }
 
     @Override
-    public void onItemClick(View view, int position) {
-
+    public void onSavedPlayerClick(String savedPlayer) {
+        Log.d(TAG, "onSavedPlayerClick - " + savedPlayer);
+        new trackerSearch().execute(BASE_URL + savedPlayer);
     }
 
     public class trackerSearch extends AsyncTask<String, Void, String> {
@@ -127,27 +139,28 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.Item
     }
 
     // for loading data base of recent searches
-    void loadData() {
-        ArrayList<String> playerData = new ArrayList<>();
+    private ArrayList<String> loadData() {
         Log.d(TAG, "Loading db stuff");
-        Cursor c = mDB.query(SearchContract.SavedPlayers.TABLE_NAME, null, null, null, null, null, null);
+        Cursor c = mDB.query(SearchContract.SavedPlayers.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                SearchContract.SavedPlayers.COLUMN_TIMESTAMP + " DESC");
 
-        if (c != null) {
-            while (c.moveToNext()) {
-                String player = c.getString(c.getColumnIndex("Players"));
-                Log.d(TAG, "adding " + player + " from DB to navBar");
-                playerData.add(player);
-            }
+        ArrayList<String> playerUsernamesList = new ArrayList<>();
+
+        while (c.moveToNext()) {
+            String player = c.getString(c.getColumnIndex("Players"));
+            Log.d(TAG, "adding " + player + " from DB to navBar");
+            playerUsernamesList.add(player);
         }
+        c.close();
         Log.d(TAG, "Done db stuff");
 
-        RecyclerView recyclerView = findViewById(R.id.rv_last_searches);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new TrackAdapter(this, playerData);
-        mAdapter.setClickListener(this);
-        recyclerView.setAdapter(mAdapter);
+        return playerUsernamesList;
     }
-
 
     private boolean checkPlayerInDB(String s) {
         boolean isSaved = false;

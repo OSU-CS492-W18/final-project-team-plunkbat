@@ -20,7 +20,9 @@ public class DBHelper  extends SQLiteOpenHelper{
         final String SQL_CREATE_SAVED_REPOS_TABLE =
                 "CREATE TABLE " + SearchContract.SavedPlayers.TABLE_NAME + "(" +
                         SearchContract.SavedPlayers._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        SearchContract.SavedPlayers.COLUMN_PLAYERS + " TEXT NOT NULL " + ");";
+                        SearchContract.SavedPlayers.COLUMN_PLAYERS + " TEXT NOT NULL, " +
+                        SearchContract.SavedPlayers.COLUMN_TIMESTAMP + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
+                        ");";
         db.execSQL(SQL_CREATE_SAVED_REPOS_TABLE);
     }
 
