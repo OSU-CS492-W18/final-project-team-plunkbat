@@ -18,7 +18,6 @@ public class FortniteParser {
 
     public static StatObject Parser(String jsonObj) {
         try {
-            Log.d(TAG,"onPostExecute/StringParam:" + jsonObj);
             JSONObject searchObj = new JSONObject(jsonObj);
             StatObject obj = new StatObject();
             if(searchObj.has("accountId"))
@@ -134,12 +133,12 @@ public class FortniteParser {
             e.printStackTrace();
             StatObject temp = new StatObject();
             temp.epicUserHandle = "Error";
-            return  temp;
+            return temp;
         }
         //return null;
     }
 
-    public static class  StatObject implements Serializable{
+    public static class StatObject implements Serializable{
          String accountID = "";
         public String PlatformNameLong = "";
         public String epicUserHandle= "";
@@ -163,5 +162,20 @@ public class FortniteParser {
             public int numMatches = -1;
             public long avgTimeDoub = -1;
         }
+    }
+
+    public static boolean PlayerFound(String jsonString){
+        try {
+            JSONObject searchObj = new JSONObject(jsonString);
+            if(searchObj.has("epicUserHandle"))
+                return true;
+            else
+                return false;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+    //return false;
     }
 }

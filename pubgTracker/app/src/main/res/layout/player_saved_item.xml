@@ -8,8 +8,8 @@
         android:id="@+id/tv_player_rv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:textSize="30sp"
+        android:padding="1dp"
+        android:textSize="20sp"
         android:textColor="#000"/>
 
 </LinearLayout>

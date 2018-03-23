@@ -19,12 +19,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static com.mobiledev.pubgtracker.utils.NetworkUtils.doHTTPGet;
+
 import com.mobiledev.pubgtracker.utils.DBHelper;
 import com.mobiledev.pubgtracker.utils.FortniteParser;
 import com.mobiledev.pubgtracker.utils.SearchContract;
 
 //Main page,search bar allows to search for user and click by name.
-public class MainActivity extends AppCompatActivity implements TrackAdapter.ItemClickListener{
+public class MainActivity extends AppCompatActivity implements TrackAdapter.ItemClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -45,9 +46,9 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.Item
         DBHelper dbHelper = new DBHelper(this);
         mDB = dbHelper.getWritableDatabase();
         loadData();
-        enteredPlayer = (EditText)findViewById(R.id.et_search_box);
+        enteredPlayer = (EditText) findViewById(R.id.et_search_box);
 
-        ImageButton searchButton = (ImageButton)findViewById(R.id.button_search);
+        ImageButton searchButton = (ImageButton) findViewById(R.id.button_search);
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.Item
                 String searchQuery = enteredPlayer.getText().toString();
 
                 if (!TextUtils.isEmpty(searchQuery)) {
-                    new trackerSearch().execute(BASE_URL+searchQuery);
+                    new trackerSearch().execute(BASE_URL + searchQuery);
                 }
 
             }
@@ -90,44 +91,51 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.Item
         @Override
         protected void onPostExecute(String s) {
 
-            Log.d(TAG,"onPostExecute/StringParam:" + s);
+            Log.d(TAG, "onPostExecute/StringParam:" + s);
 
-            if(s != null) {
-                object = FortniteParser.Parser(s);
 
-                // Check if the query returned anything before adding it to the DB
-                ContentValues row = new ContentValues();
-                row.put(SearchContract.SavedPlayers.COLUMN_PLAYERS, object.epicUserHandle);
-                mDB.insert(SearchContract.SavedPlayers.TABLE_NAME, null, row);
+            if (s != null) {
+                if (FortniteParser.PlayerFound(s)) {
+                    object = FortniteParser.Parser(s);
 
-                Log.d(TAG, s);
-                Log.d(TAG, "Testing name: " + object.epicUserHandle);
-                Log.d(TAG, "Testing solo win: " + String.valueOf(object.gameModeStats.get(0).wins)); //solo
-                Log.d(TAG, "Testing dou win: " + String.valueOf(object.gameModeStats.get(1).wins)); //dou
-                Log.d(TAG, "Testing squad win: " + String.valueOf(object.gameModeStats.get(2).wins)); //squad
-                Log.d(TAG, "Testing solo win: " + String.valueOf(object.gameModeStats.get(0).score)); //solo
-                Log.d(TAG, "Testing dou win: " + String.valueOf(object.gameModeStats.get(1).score)); //dou
-                Log.d(TAG, "Testing squad win: " + String.valueOf(object.gameModeStats.get(2).score)); //squad
+                    if(!checkPlayerInDB(object.epicUserHandle)) {
+                        ContentValues row = new ContentValues();
+                        row.put(SearchContract.SavedPlayers.COLUMN_PLAYERS, object.epicUserHandle);
+                        mDB.insert(SearchContract.SavedPlayers.TABLE_NAME, null, row);
+                    }
 
-                Intent statsIntent = new Intent(MainActivity.this, StatsActivity.class);
-                statsIntent.putExtra(EXTRA, object);
-                startActivity(statsIntent);
+                    Log.d(TAG, s);
+                    Log.d(TAG, "Testing name: " + object.epicUserHandle);
+//                    Log.d(TAG, "Testing solo win: " + String.valueOf(object.gameModeStats.get(0).wins)); //solo
+//                    Log.d(TAG, "Testing dou win: " + String.valueOf(object.gameModeStats.get(1).wins)); //dou
+//                    Log.d(TAG, "Testing squad win: " + String.valueOf(object.gameModeStats.get(2).wins)); //squad
+//                    Log.d(TAG, "Testing solo win: " + String.valueOf(object.gameModeStats.get(0).score)); //solo
+//                    Log.d(TAG, "Testing dou win: " + String.valueOf(object.gameModeStats.get(1).score)); //dou
+//                    Log.d(TAG, "Testing squad win: " + String.valueOf(object.gameModeStats.get(2).score)); //squad
+
+                    Intent statsIntent = new Intent(MainActivity.this, StatsActivity.class);
+                    statsIntent.putExtra(EXTRA, object);
+                    startActivity(statsIntent);
+                } else {
+                    Log.d(TAG, "onPostExecute() - Player not found"); //TODO Pop a toast?
+                }
+            } else {
+                Log.d(TAG,"onPostExecute() - String param NULL.");
             }
         }
 
     }
+
     // for loading data base of recent searches
-    void loadData(){
+    void loadData() {
         ArrayList<String> playerData = new ArrayList<>();
         Log.d(TAG, "Loading db stuff");
         Cursor c = mDB.query(SearchContract.SavedPlayers.TABLE_NAME, null, null, null, null, null, null);
 
-        if(c!=null)
-        {
-            while(c.moveToNext())
-            {
+        if (c != null) {
+            while (c.moveToNext()) {
                 String player = c.getString(c.getColumnIndex("Players"));
-                Log.d(TAG, "adding "+ player +" from DB to navBar");
+                Log.d(TAG, "adding " + player + " from DB to navBar");
                 playerData.add(player);
             }
         }
@@ -139,4 +147,26 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.Item
         mAdapter.setClickListener(this);
         recyclerView.setAdapter(mAdapter);
     }
+
+
+    private boolean checkPlayerInDB(String s) {
+        boolean isSaved = false;
+        if (s != null) {
+            String sqlSelection = SearchContract.SavedPlayers.COLUMN_PLAYERS + " = ?";
+            String[] sqlSelectionArgs = { s };
+            Cursor cursor = mDB.query(
+                    SearchContract.SavedPlayers.TABLE_NAME,
+                    null,
+                    sqlSelection,
+                    sqlSelectionArgs,
+                    null,
+                    null,
+                    null
+            );
+            isSaved = cursor.getCount() > 0;
+            cursor.close();
+        }
+        return isSaved;
+    }
+
 }
