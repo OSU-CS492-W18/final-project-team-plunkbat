@@ -1,6 +1,7 @@
 package com.mobiledev.pubgtracker;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,6 +25,8 @@ import static com.mobiledev.pubgtracker.utils.NetworkUtils.doHTTPGet;
 import com.mobiledev.pubgtracker.utils.DBHelper;
 import com.mobiledev.pubgtracker.utils.FortniteParser;
 import com.mobiledev.pubgtracker.utils.SearchContract;
+
+import javax.xml.datatype.Duration;
 
 //Main page,search bar allows to search for user and click by name.
 public class MainActivity extends AppCompatActivity implements TrackAdapter.OnSavedPlayerClickListener {
@@ -145,6 +149,12 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.OnSa
                     startActivity(statsIntent);
                 } else {
                     Log.d(TAG, "onPostExecute() - Player not found"); //TODO Pop a toast?
+
+
+
+
+                    Toast toast = Toast.makeText( getApplicationContext(), "Player not found" , Toast.LENGTH_SHORT);
+                    toast.show();
                 }
             } else {
                 Log.d(TAG,"onPostExecute() - String param NULL.");
