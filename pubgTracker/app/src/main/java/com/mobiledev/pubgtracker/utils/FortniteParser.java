@@ -1,6 +1,5 @@
 package com.mobiledev.pubgtracker.utils;
 
-import android.nfc.Tag;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -8,18 +7,18 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by Stephen on 3/16/2018.
  */
 
-public class ForniteParser{
+public class FortniteParser {
+
+    private static final String TAG = FortniteParser.class.getSimpleName();
 
     public static StatObject Parser(String jsonObj) {
         try {
+            Log.d(TAG,"onPostExecute/StringParam:" + jsonObj);
             JSONObject searchObj = new JSONObject(jsonObj);
             StatObject obj = new StatObject();
             if(searchObj.has("accountId"))
@@ -35,21 +34,22 @@ public class ForniteParser{
             {
                 obj.epicUserHandle = searchObj.getString("epicUserHandle");
             }
+
+            obj.gameModeStats.clear();
+
             for(int i = 0; i < 3; i++)
             {
                 StatObject.GameModeStats gm = new StatObject.GameModeStats();
+
                 String mode = "p2";
-                String modeClass = "solo";
 
                 if(i == 1)
                 {
                     mode = "p10";
-                    modeClass = "dou";
                 }
                 if(i == 2)
                 {
                     mode = "p9";
-                    modeClass = "squad";
                 }
                 if(searchObj.getJSONObject("stats").has(mode)) {
                     if (searchObj.getJSONObject("stats").getJSONObject(mode).
@@ -93,15 +93,20 @@ public class ForniteParser{
                         gm.kdr = searchObj.getJSONObject("stats").getJSONObject(mode).
                                 getJSONObject("kd").getDouble("valueDec");
                     }
+//                    if (searchObj.getJSONObject("stats").getJSONObject(mode).
+//                            has("minutesPlayed")) {
+//                        gm.timePlayed = searchObj.getJSONObject("stats").getJSONObject(mode).
+//                                getJSONObject("minutesPlayed").getString("displayValue");
+//                    }
+//                    if (searchObj.getJSONObject("stats").getJSONObject(mode).
+//                            has("kpm")) {
+//                        gm.killsPerMin = searchObj.getJSONObject("stats").getJSONObject(mode).
+//                                getJSONObject("kpm").getDouble("valueDec");
+//                    }
                     if (searchObj.getJSONObject("stats").getJSONObject(mode).
-                            has("minutesPlayed")) {
-                        gm.timePlayed = searchObj.getJSONObject("stats").getJSONObject(mode).
-                                getJSONObject("minutesPlayed").getString("displayValue");
-                    }
-                    if (searchObj.getJSONObject("stats").getJSONObject(mode).
-                            has("kpm")) {
-                        gm.killsPerMin = searchObj.getJSONObject("stats").getJSONObject(mode).
-                                getJSONObject("kpm").getInt("valueDec");
+                            has("matches")) {
+                        gm.numMatches = searchObj.getJSONObject("stats").getJSONObject(mode).
+                                getJSONObject("matches").getInt("valueInt");
                     }
                     if (searchObj.getJSONObject("stats").getJSONObject(mode).
                             has("kpg")) {
@@ -113,6 +118,13 @@ public class ForniteParser{
                         gm.avgMatchTime = searchObj.getJSONObject("stats").getJSONObject(mode).
                                 getJSONObject("avgTimePlayed").getString("displayValue");
                     }
+
+                    if (searchObj.getJSONObject("stats").getJSONObject(mode).
+                            has("avgTimePlayed")) {
+                        gm.avgTimeDoub = searchObj.getJSONObject("stats").getJSONObject(mode).
+                                getJSONObject("avgTimePlayed").getLong("valueDec");
+                    }
+
                 }
                 obj.gameModeStats.add(gm);
             }
@@ -134,7 +146,7 @@ public class ForniteParser{
 
         public static ArrayList<GameModeStats> gameModeStats = new ArrayList<GameModeStats>();
 
-        public static class GameModeStats
+        public static class GameModeStats implements Serializable
         {
             public int score = -1;
             public int scoreRank = -1;
@@ -144,10 +156,12 @@ public class ForniteParser{
             public int topTenRank= -1;
             public int topTwentyFive= -1;
             public double kdr= -1;
-            public String timePlayed= "";
-            public double killsPerMin= -1;
+//            public String timePlayed= "";
+//            public double killsPerMin= -1;
             public double killsPerMatch= -1;
             public String avgMatchTime= "";
+            public int numMatches = -1;
+            public long avgTimeDoub = -1;
         }
     }
 }

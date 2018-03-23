@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -22,24 +20,22 @@ import java.util.ArrayList;
 
 import static com.mobiledev.pubgtracker.utils.NetworkUtils.doHTTPGet;
 import com.mobiledev.pubgtracker.utils.DBHelper;
-import com.mobiledev.pubgtracker.utils.ForniteParser;
+import com.mobiledev.pubgtracker.utils.FortniteParser;
 import com.mobiledev.pubgtracker.utils.SearchContract;
-import com.mobiledev.pubgtracker.TrackAdapter;
 
 //Main page,search bar allows to search for user and click by name.
 public class MainActivity extends AppCompatActivity implements TrackAdapter.ItemClickListener{
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    String apiKey = "5cacd83e-3861-42ff-a981-c0c1a81ff6c4";
-    String URLTest = "https://api.fortnitetracker.com/v1/profile/pc/CelticChristoph";
-    String jsonTest;
+    String BASE_URL = "https://api.fortnitetracker.com/v1/profile/pc/";
+    String resultJSON;
     TrackAdapter mAdapter;
     SQLiteDatabase mDB;
-    ForniteParser.StatObject object = new ForniteParser.StatObject();
+    FortniteParser.StatObject object = new FortniteParser.StatObject();
     EditText enteredPlayer;
 
-    SearchContract mSearchContract;
+    static String EXTRA = "extra";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.Item
                 String searchQuery = enteredPlayer.getText().toString();
 
                 if (!TextUtils.isEmpty(searchQuery)) {
-                    new trackerSearch().execute();
+                    new trackerSearch().execute(BASE_URL+searchQuery);
                 }
 
             }
@@ -83,32 +79,40 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.Item
         @Override
         protected String doInBackground(String... urls) {
             try {
-                jsonTest = doHTTPGet(URLTest);
+                Log.d("URL", urls[0]);
+                resultJSON = doHTTPGet(urls[0]);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return jsonTest;
+            return resultJSON;
         }
 
         @Override
         protected void onPostExecute(String s) {
-            object = ForniteParser.Parser(s);
 
-            // Check if the query returned anything before adding it to the DB
-            ContentValues row = new ContentValues();
-            row.put(SearchContract.SavedRepos.COLUMN_FULL_NAME, object.epicUserHandle);
-            mDB.insert(SearchContract.SavedRepos.TABLE_NAME, null, row);
-            Intent statsIntent = new Intent(MainActivity.this, StatsActivity.class);
-            startActivity(statsIntent);
+            Log.d(TAG,"onPostExecute/StringParam:" + s);
 
-            Log.d(TAG, s);
-            Log.d(TAG, "Testing name: " + object.epicUserHandle);
-            Log.d(TAG, "Testing solo win: " + String.valueOf(object.gameModeStats.get(0).wins)); //solo
-            Log.d(TAG, "Testing dou win: " + String.valueOf(object.gameModeStats.get(1).wins)); //dou
-            Log.d(TAG, "Testing squad win: " + String.valueOf(object.gameModeStats.get(2).wins)); //squad
-            Log.d(TAG, "Testing solo win: " + String.valueOf(object.gameModeStats.get(0).score)); //solo
-            Log.d(TAG, "Testing dou win: " + String.valueOf(object.gameModeStats.get(1).score)); //dou
-            Log.d(TAG, "Testing squad win: " + String.valueOf(object.gameModeStats.get(2).score)); //squad
+            if(s != null) {
+                object = FortniteParser.Parser(s);
+
+                // Check if the query returned anything before adding it to the DB
+                ContentValues row = new ContentValues();
+                row.put(SearchContract.SavedPlayers.COLUMN_PLAYERS, object.epicUserHandle);
+                mDB.insert(SearchContract.SavedPlayers.TABLE_NAME, null, row);
+
+                Log.d(TAG, s);
+                Log.d(TAG, "Testing name: " + object.epicUserHandle);
+                Log.d(TAG, "Testing solo win: " + String.valueOf(object.gameModeStats.get(0).wins)); //solo
+                Log.d(TAG, "Testing dou win: " + String.valueOf(object.gameModeStats.get(1).wins)); //dou
+                Log.d(TAG, "Testing squad win: " + String.valueOf(object.gameModeStats.get(2).wins)); //squad
+                Log.d(TAG, "Testing solo win: " + String.valueOf(object.gameModeStats.get(0).score)); //solo
+                Log.d(TAG, "Testing dou win: " + String.valueOf(object.gameModeStats.get(1).score)); //dou
+                Log.d(TAG, "Testing squad win: " + String.valueOf(object.gameModeStats.get(2).score)); //squad
+
+                Intent statsIntent = new Intent(MainActivity.this, StatsActivity.class);
+                statsIntent.putExtra(EXTRA, object);
+                startActivity(statsIntent);
+            }
         }
 
     }
@@ -116,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.Item
     void loadData(){
         ArrayList<String> playerData = new ArrayList<>();
         Log.d(TAG, "Loading db stuff");
-        Cursor c = mDB.query(SearchContract.SavedRepos.TABLE_NAME, null, null, null, null, null, null);
+        Cursor c = mDB.query(SearchContract.SavedPlayers.TABLE_NAME, null, null, null, null, null, null);
 
         if(c!=null)
         {

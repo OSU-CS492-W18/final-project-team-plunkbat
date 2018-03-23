@@ -18,15 +18,15 @@ public class DBHelper  extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db) {
         final String SQL_CREATE_SAVED_REPOS_TABLE =
-                "CREATE TABLE " + SearchContract.SavedRepos.TABLE_NAME + "(" +
-                        SearchContract.SavedRepos._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        SearchContract.SavedRepos.COLUMN_FULL_NAME + " TEXT NOT NULL " + ");";
+                "CREATE TABLE " + SearchContract.SavedPlayers.TABLE_NAME + "(" +
+                        SearchContract.SavedPlayers._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        SearchContract.SavedPlayers.COLUMN_PLAYERS + " TEXT NOT NULL " + ");";
         db.execSQL(SQL_CREATE_SAVED_REPOS_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + SearchContract.SavedRepos.TABLE_NAME + ";");
+        db.execSQL("DROP TABLE IF EXISTS " + SearchContract.SavedPlayers.TABLE_NAME + ";");
         onCreate(db);
     }
 }

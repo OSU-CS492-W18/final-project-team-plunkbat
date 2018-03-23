@@ -14,8 +14,11 @@ public class NetworkUtils {
 
     private static final OkHttpClient mHTTPClient = new OkHttpClient();
 
+    private static final String API_KEY = "5cacd83e-3861-42ff-a981-c0c1a81ff6c4";
+    private static final String HEADER = "TRN-Api-Key";
+
     public static String doHTTPGet(String url) throws IOException {
-        Request req = new Request.Builder().url(url).header("TRN-Api-Key", "5cacd83e-3861-42ff-a981-c0c1a81ff6c4").build();
+        Request req = new Request.Builder().url(url).header(HEADER, API_KEY).build();
         Response res = mHTTPClient.newCall(req).execute();
         try {
             return res.body().string();

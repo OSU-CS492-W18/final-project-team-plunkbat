@@ -8,8 +8,8 @@ public class SearchContract {
 
     private SearchContract() {}
 
-    public static class SavedRepos implements BaseColumns {
+    public static class SavedPlayers implements BaseColumns {
         public static final String TABLE_NAME = "savedPlayers";
-        public static final String COLUMN_FULL_NAME = "Players";
+        public static final String COLUMN_PLAYERS = "Players";
     }
 }
