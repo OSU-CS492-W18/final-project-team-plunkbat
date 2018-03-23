@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.OnSa
                 if (FortniteParser.PlayerFound(s)) {
                     object = FortniteParser.Parser(s);
 
+                    deletePlayerDB(object.epicUserHandle);
                     addPlayerDB(object.epicUserHandle);
 
                     Log.d(TAG, s);
@@ -166,10 +167,12 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.OnSa
 
         ArrayList<String> playerUsernamesList = new ArrayList<>();
 
-        while (c.moveToNext()) {
+        int i = 0;
+        while (c.moveToNext() && i < 5){
             String player = c.getString(c.getColumnIndex("Players"));
             Log.d(TAG, "adding " + player + " from DB to navBar");
             playerUsernamesList.add(player);
+            i++;
         }
         c.close();
         Log.d(TAG, "Done db stuff");
