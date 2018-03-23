@@ -1,9 +1,13 @@
 package com.mobiledev.pubgtracker;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -35,10 +39,8 @@ public class StatsActivity extends AppCompatActivity {
 
     FortniteParser.StatObject mResult;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stats_activity);
 
@@ -91,21 +93,7 @@ public class StatsActivity extends AppCompatActivity {
 
     private void updateView(String mode){
 
-        int modeNum;
-        switch (mode){
-            case "Solo":
-                modeNum = 0;
-                break;
-            case "Duo":
-                modeNum = 1;
-                break;
-            case "Squad":
-                modeNum = 2;
-                break;
-            default:
-                modeNum = -1;
-                break;
-        }
+        int modeNum = getModeNum(mode);
 
         Log.d("Mode", Integer.toString(modeNum));
 
@@ -117,9 +105,9 @@ public class StatsActivity extends AppCompatActivity {
                 long avgTime = mResult.gameModeStats.get(modeNum).avgTimeDoub;
                 long time = avgTime * nMatches;
 
-                double kills = mResult.gameModeStats.get(modeNum).kills;
+                int kills = mResult.gameModeStats.get(modeNum).kills;
 
-                Double killsPerMin = Math.round((kills / time) * 1000.00) / 1000.0;
+                Double killsPerMin = Math.round(((double)kills / time) * 1000.00) / 1000.0;
 
                 String timePlayed = String.format(
                         "%02dD:%02dH:%02dM:%02dS",
@@ -134,8 +122,8 @@ public class StatsActivity extends AppCompatActivity {
                 Log.d("AvgTime:", mResult.gameModeStats.get(modeNum).avgMatchTime);
                 tvScore.setText(Integer.toString(mResult.gameModeStats.get(modeNum).score));
                 tvWins.setText(Integer.toString(mResult.gameModeStats.get(modeNum).wins));
-                tvWinPercent.setText(Double.toString(mResult.gameModeStats.get(modeNum).wins));
-                tvKills.setText(Integer.toString(mResult.gameModeStats.get(modeNum).kills));
+                tvWinPercent.setText(Double.toString((mResult.gameModeStats.get(modeNum).wins)/(nMatches)));
+                tvKills.setText(Integer.toString(kills));
                 tvKDRatio.setText(Double.toString(mResult.gameModeStats.get(modeNum).kdr));
                 tvKPMin.setText(Double.toString(killsPerMin));
                 tvKPMatch.setText(Double.toString(mResult.gameModeStats.get(modeNum).killsPerMatch));
@@ -164,5 +152,106 @@ public class StatsActivity extends AppCompatActivity {
                 tvScorePerMatch.setText("N/A");
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.player_detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_view_online:
+                viewStatsInBrowser();
+                return true;
+            case R.id.action_share:
+                shareStats();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void viewStatsInBrowser() {
+        if (mResult != null) {
+            Uri playerFNStatsURL = Uri.parse(MainActivity.BASE_SITE + mResult.epicUserHandle);
+            Intent webIntent = new Intent(Intent.ACTION_VIEW, playerFNStatsURL);
+            if (webIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(webIntent);
+            }
+        }
+    }
+
+    public void shareStats() {
+        if (mResult != null) {
+
+            int modeNum = getModeNum(checkButton());
+
+            if (modeNum >= 0) {
+
+                long nMatches = mResult.gameModeStats.get(modeNum).numMatches;
+
+                if (nMatches > 0) {
+                    long avgTime = mResult.gameModeStats.get(modeNum).avgTimeDoub;
+                    long time = avgTime * nMatches;
+
+                    double kills = mResult.gameModeStats.get(modeNum).kills;
+
+                    Double killsPerMin = Math.round((kills / time) * 1000.00) / 1000.0;
+
+                    String timePlayed = String.format(
+                            "%02dD:%02dH:%02dM:%02dS",
+                            TimeUnit.SECONDS.toDays(time),
+                            TimeUnit.SECONDS.toHours(time) - TimeUnit.DAYS.toHours(TimeUnit.SECONDS.toDays(time)),
+                            TimeUnit.SECONDS.toMinutes(time) - TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(time)),
+                            TimeUnit.SECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(time)));
+
+                    String avgMatchTime = mResult.gameModeStats.get(modeNum).avgMatchTime;
+//                    long score = mResult.gameModeStats.get(modeNum).score;
+                    int wins = mResult.gameModeStats.get(modeNum).wins;
+                    double winPercent = mResult.gameModeStats.get(modeNum).wins / nMatches;
+//                    int kills = mResult.gameModeStats.get(modeNum).kills;
+                    double kdr = mResult.gameModeStats.get(modeNum).kdr;
+                    double killsPerMatch = mResult.gameModeStats.get(modeNum).killsPerMatch;
+                    long score = mResult.gameModeStats.get(modeNum).score;
+
+
+                    String shareText = getString(R.string.share_text_prefix) + " - \n" +
+                            mResult.epicUserHandle + " playing " + checkButton() +" on " + mResult.PlatformNameLong + ": \n" +
+                            "Wins: "+wins+"/WinPct: "+winPercent+"/ModeScore: "+score+"\n"+
+                            "Kills: "+kills+"/KillsMatch: "+killsPerMatch+"/KDR: "+kdr+"\n"+
+                            "AvgMatchTime: "+avgMatchTime;
+
+
+                    ShareCompat.IntentBuilder.from(this)
+                            .setChooserTitle(R.string.share_app_choose_titlebar)
+                            .setType("text/plain" )
+                            .setText(shareText)
+                            .startChooser();
+                }
+            }
+        }
+    }
+
+    private int getModeNum(String modeText) {
+        int modeNum;
+        switch (modeText) {
+            case "Solo":
+                modeNum = 0;
+                break;
+            case "Duo":
+                modeNum = 1;
+                break;
+            case "Squad":
+                modeNum = 2;
+                break;
+            default:
+                modeNum = -1;
+                break;
+        }
+
+        return modeNum;
     }
 }

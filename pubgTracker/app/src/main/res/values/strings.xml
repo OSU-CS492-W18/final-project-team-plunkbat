@@ -9,6 +9,13 @@
     <string name="squad">Squad</string>
     <string name="last_searches">Last 5 Searches:</string>
 
+    <!-- Strings for Menu Buttons -->
+    <string name="action_share">Share</string>
+    <string name="action_view_online">View stats on FortniteTracker</string>
+
+    <!-- Strings for Share Option -->
+    <string name="share_app_choose_titlebar">Choose an app to share your stats!...</string>
+    <string name="share_text_prefix">Think you can match this?</string>
 
     <!-- Strings for Stats Activity -->
     <string name="username">Player:</string>

@@ -29,7 +29,10 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.OnSa
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    String BASE_URL = "https://api.fortnitetracker.com/v1/profile/pc/";
+    public static final String BASE_SITE = "https://fortnitetracker.com/profile/pc/";
+    public static final String API_URL = "https://api.fortnitetracker.com/v1/profile/pc/";
+    public static final String API_KEY = "5cacd83e-3861-42ff-a981-c0c1a81ff6c4";
+    public static final String HEADER = "TRN-Api-Key";
     String resultJSON;
 
     RecyclerView mSavedPlayerRV;
@@ -68,19 +71,34 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.OnSa
                 String searchQuery = enteredPlayer.getText().toString();
 
                 if (!TextUtils.isEmpty(searchQuery)) {
-                    new trackerSearch().execute(BASE_URL + searchQuery);
+                    new trackerSearch().execute(API_URL + searchQuery);
                 }
 
             }
         });
     }
 
+    //Simple hack to get RV to update correctly.
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        finish();
+        startActivity(getIntent());
+    }
+
+    @Override
+    protected void onDestroy() {
+        mDB.close();
+        super.onDestroy();
+    }
+
+
     @Override
     public void onSavedPlayerClick(String savedPlayer) {
         Log.d(TAG, "onSavedPlayerClick - " + savedPlayer);
 
         deletePlayerDB(savedPlayer);
-        new trackerSearch().execute(BASE_URL + savedPlayer);
+        new trackerSearch().execute(API_URL + savedPlayer);
     }
 
     public class trackerSearch extends AsyncTask<String, Void, String> {
@@ -88,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.OnSa
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
         }
 
         @Override
