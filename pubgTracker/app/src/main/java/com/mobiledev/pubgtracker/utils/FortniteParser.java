@@ -159,7 +159,7 @@ public class FortniteParser {
 //            public String timePlayed= "";
 //            public double killsPerMin= -1;
             public double killsPerMatch= -1;
-            public String avgMatchTime= "";
+            public String avgMatchTime= "-1";
             public int numMatches = -1;
             public long avgTimeDoub = -1;
         }

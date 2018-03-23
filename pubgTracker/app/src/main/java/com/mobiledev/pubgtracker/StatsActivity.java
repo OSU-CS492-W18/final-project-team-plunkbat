@@ -91,33 +91,35 @@ public class StatsActivity extends AppCompatActivity {
 
     private void updateView(String mode){
 
-            int modeNum;
-            switch (mode){
-                case "Solo":
-                    modeNum = 0;
-                    break;
-                case "Duo":
-                    modeNum = 1;
-                    break;
-                case "Squad":
-                    modeNum = 2;
-                    break;
-                default:
-                    modeNum = -1;
-                    break;
-            }
+        int modeNum;
+        switch (mode){
+            case "Solo":
+                modeNum = 0;
+                break;
+            case "Duo":
+                modeNum = 1;
+                break;
+            case "Squad":
+                modeNum = 2;
+                break;
+            default:
+                modeNum = -1;
+                break;
+        }
 
-            Log.d("Mode", Integer.toString(modeNum));
+        Log.d("Mode", Integer.toString(modeNum));
 
-            if(modeNum >= 0){
+        if(modeNum >= 0){
 
+            long nMatches = mResult.gameModeStats.get(modeNum).numMatches;
+
+            if(nMatches>0) {
                 long avgTime = mResult.gameModeStats.get(modeNum).avgTimeDoub;
-                long nMatches = mResult.gameModeStats.get(modeNum).numMatches;
-                long time = avgTime*nMatches;
+                long time = avgTime * nMatches;
 
                 double kills = mResult.gameModeStats.get(modeNum).kills;
 
-                Double killsPerMin = Math.round((kills/time) * 1000.00)/1000.0;
+                Double killsPerMin = Math.round((kills / time) * 1000.00) / 1000.0;
 
                 String timePlayed = String.format(
                         "%02dD:%02dH:%02dM:%02dS",
@@ -138,8 +140,29 @@ public class StatsActivity extends AppCompatActivity {
                 tvKPMin.setText(Double.toString(killsPerMin));
                 tvKPMatch.setText(Double.toString(mResult.gameModeStats.get(modeNum).killsPerMatch));
                 tvScorePerMatch.setText(Integer.toString(mResult.gameModeStats.get(modeNum).score));
+            } else {
+                long time = 0;
 
+                String timePlayed = String.format(
+                        "%02dD:%02dH:%02dM:%02dS",
+                        TimeUnit.SECONDS.toDays(time),
+                        TimeUnit.SECONDS.toHours(time) - TimeUnit.DAYS.toHours(TimeUnit.SECONDS.toDays(time)),
+                        TimeUnit.SECONDS.toMinutes(time) - TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(time)),
+                        TimeUnit.SECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(time)));
+
+                tvTimePlayed.setText(timePlayed);
+                Log.d("Time:", timePlayed);
+                tvAvgMatchTime.setText("N/A");
+                Log.d("AvgTime:", "N/A");
+                tvScore.setText("N/A");
+                tvWins.setText("N/A");
+                tvWinPercent.setText("N/A");
+                tvKills.setText("N/A");
+                tvKDRatio.setText("N/A");
+                tvKPMin.setText("N/A");
+                tvKPMatch.setText("N/A");
+                tvScorePerMatch.setText("N/A");
             }
+        }
     }
-
 }
