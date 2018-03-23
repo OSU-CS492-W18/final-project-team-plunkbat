@@ -78,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.OnSa
     @Override
     public void onSavedPlayerClick(String savedPlayer) {
         Log.d(TAG, "onSavedPlayerClick - " + savedPlayer);
+
+        deletePlayerDB(savedPlayer);
         new trackerSearch().execute(BASE_URL + savedPlayer);
     }
 
@@ -110,11 +112,7 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.OnSa
                 if (FortniteParser.PlayerFound(s)) {
                     object = FortniteParser.Parser(s);
 
-                    if(!checkPlayerInDB(object.epicUserHandle)) {
-                        ContentValues row = new ContentValues();
-                        row.put(SearchContract.SavedPlayers.COLUMN_PLAYERS, object.epicUserHandle);
-                        mDB.insert(SearchContract.SavedPlayers.TABLE_NAME, null, row);
-                    }
+                    addPlayerDB(object.epicUserHandle);
 
                     Log.d(TAG, s);
                     Log.d(TAG, "Testing name: " + object.epicUserHandle);
@@ -182,4 +180,20 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.OnSa
         return isSaved;
     }
 
+    public boolean deletePlayerDB(String name) {
+        String[] args = new String[]{name};
+        return mDB.delete(SearchContract.SavedPlayers.TABLE_NAME,
+                SearchContract.SavedPlayers.COLUMN_PLAYERS + "=?",
+                args) > 0;
+    }
+
+    public boolean addPlayerDB(String name) {
+        boolean bool = false;
+        if(!checkPlayerInDB(name)) {
+            ContentValues row = new ContentValues();
+            row.put(SearchContract.SavedPlayers.COLUMN_PLAYERS, name);
+            bool = mDB.insert(SearchContract.SavedPlayers.TABLE_NAME, null, row) > 0;
+        }
+        return bool;
+    }
 }
