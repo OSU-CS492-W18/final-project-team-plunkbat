@@ -6,6 +6,12 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import static android.content.ContentValues.TAG;
+
 /**
  * Created by Stephen on 3/16/2018.
  */
@@ -16,85 +22,108 @@ public class ForniteParser{
         try {
             JSONObject searchObj = new JSONObject(jsonObj);
             StatObject obj = new StatObject();
-            obj.accountID = searchObj.getString("accountId");
-            obj.PlatformNameLong = searchObj.getString("platformNameLong");
-            obj.epicUserHandle = searchObj.getString("epicUserHandle");
-            //solostats
-            obj.solo.score = searchObj.getJSONObject("stats").getJSONObject("p2").
-                    getJSONObject("score").getInt("valueInt");
-            obj.solo.scoreRank = searchObj.getJSONObject("stats").getJSONObject("p2").
-                    getJSONObject("score").getInt("rank");
-            obj.solo.kills = searchObj.getJSONObject("stats").getJSONObject("p2").
-                    getJSONObject("kills").getInt("valueInt");
-            obj.solo.wins = searchObj.getJSONObject("stats").getJSONObject("p2").
-                    getJSONObject("top1").getInt("valueInt");
-            obj.solo.topTen = searchObj.getJSONObject("stats").getJSONObject("p2").
-                    getJSONObject("top10").getInt("valueInt");
-            obj.solo.topTenRank = searchObj.getJSONObject("stats").getJSONObject("p2").
-                    getJSONObject("top10").getInt("rank");
-            obj.solo.topTwentyFive = searchObj.getJSONObject("stats").getJSONObject("p2").
-                    getJSONObject("top25").getInt("valueInt");
-            obj.solo.kdr = searchObj.getJSONObject("stats").getJSONObject("p2").
-                    getJSONObject("kd").getDouble("valueDec");
-            obj.solo.timePlayed = searchObj.getJSONObject("stats").getJSONObject("p2").
-                    getJSONObject("minutesPlayed").getString("displayValue");
-            obj.solo.killsPerMin = searchObj.getJSONObject("stats").getJSONObject("p2").
-                    getJSONObject("kpm").getInt("valueDec");
-            obj.solo.killsPerMatch = searchObj.getJSONObject("stats").getJSONObject("p2").
-                    getJSONObject("kpg").getInt("valueDec");
-            obj.solo.avgMatchTime = searchObj.getJSONObject("stats").getJSONObject("p2").
-                    getJSONObject("avgTimePlayed").getString("displayValue");
-            //dou code
-            obj.dou.score = searchObj.getJSONObject("stats").getJSONObject("p10").
-                    getJSONObject("score").getInt("valueInt");
-            obj.dou.scoreRank = searchObj.getJSONObject("stats").getJSONObject("p10").
-                    getJSONObject("score").getInt("rank");
-            obj.dou.kills = searchObj.getJSONObject("stats").getJSONObject("p10").
-                    getJSONObject("kills").getInt("valueInt");
-            obj.dou.wins = searchObj.getJSONObject("stats").getJSONObject("p10").
-                    getJSONObject("top1").getInt("valueInt");
-            obj.dou.topTen = searchObj.getJSONObject("stats").getJSONObject("p10").
-                    getJSONObject("top10").getInt("valueInt");
-            obj.dou.topTenRank = searchObj.getJSONObject("stats").getJSONObject("p10").
-                    getJSONObject("top10").getInt("rank");
-            obj.dou.topTwentyFive = searchObj.getJSONObject("stats").getJSONObject("p10").
-                    getJSONObject("top25").getInt("valueInt");
-            obj.dou.kdr = searchObj.getJSONObject("stats").getJSONObject("p10").
-                    getJSONObject("kd").getDouble("valueDec");
-            obj.dou.timePlayed = searchObj.getJSONObject("stats").getJSONObject("p10").
-                    getJSONObject("minutesPlayed").getString("displayValue");
-            obj.dou.killsPerMin = searchObj.getJSONObject("stats").getJSONObject("p10").
-                    getJSONObject("kpm").getInt("valueDec");
-            obj.dou.killsPerMatch = searchObj.getJSONObject("stats").getJSONObject("p10").
-                    getJSONObject("kpg").getInt("valueDec");
-            obj.dou.avgMatchTime = searchObj.getJSONObject("stats").getJSONObject("p10").
-                    getJSONObject("avgTimePlayed").getString("displayValue");
-            //squad code
-            obj.squad.score = searchObj.getJSONObject("stats").getJSONObject("p9").
-                    getJSONObject("score").getInt("valueInt");
-            obj.squad.scoreRank = searchObj.getJSONObject("stats").getJSONObject("p9").
-                    getJSONObject("score").getInt("rank");
-            obj.squad.kills = searchObj.getJSONObject("stats").getJSONObject("p9").
-                    getJSONObject("kills").getInt("valueInt");
-            obj.squad.wins = searchObj.getJSONObject("stats").getJSONObject("p9").
-                    getJSONObject("top1").getInt("valueInt");
-            obj.squad.topTen = searchObj.getJSONObject("stats").getJSONObject("p2").
-                    getJSONObject("top10").getInt("valueInt");
-            obj.squad.topTenRank = searchObj.getJSONObject("stats").getJSONObject("p9").
-                    getJSONObject("top10").getInt("rank");
-            obj.squad.topTwentyFive = searchObj.getJSONObject("stats").getJSONObject("p9").
-                    getJSONObject("top25").getInt("valueInt");
-            obj.squad.kdr = searchObj.getJSONObject("stats").getJSONObject("p9").
-                    getJSONObject("kd").getDouble("valueDec");
-            obj.squad.timePlayed = searchObj.getJSONObject("stats").getJSONObject("p9").
-                    getJSONObject("minutesPlayed").getString("displayValue");
-            obj.squad.killsPerMin = searchObj.getJSONObject("stats").getJSONObject("p9").
-                    getJSONObject("kpm").getInt("valueDec");
-            obj.squad.killsPerMatch = searchObj.getJSONObject("stats").getJSONObject("p9").
-                    getJSONObject("kpg").getInt("valueDec");
-            obj.squad.avgMatchTime = searchObj.getJSONObject("stats").getJSONObject("p9").
-                    getJSONObject("avgTimePlayed").getString("displayValue");
+            if(searchObj.has("accountId"))
+            {
+                Log.d(TAG, "ITS HAS A NAME");
+                obj.accountID = searchObj.getString("accountId");
+            }
+            if(searchObj.has("platformNameLong"))
+            {
+                obj.PlatformNameLong = searchObj.getString("platformNameLong");
+            }
+            if(searchObj.has("epicUserHandle"))
+            {
+                obj.epicUserHandle = searchObj.getString("epicUserHandle");
+            }
+            for(int i = 0; i < 3; i++)
+            {
+                StatObject.GameModeStats gm = new StatObject.GameModeStats();
+                String mode = "p2";
+                String modeClass = "solo";
 
+                if(i == 1)
+                {
+                    mode = "p10";
+                    modeClass = "dou";
+                }
+                if(i ==2)
+                {
+                    mode = "p9";
+                    modeClass = "squad";
+                }
+                if(searchObj.getJSONObject("stats").getJSONObject(mode).
+                        has("score"))
+                {
+                    gm.score = searchObj.getJSONObject("stats").getJSONObject(mode).
+                            getJSONObject("score").getInt("valueInt");
+                    if(searchObj.getJSONObject("stats").getJSONObject(mode).
+                            getJSONObject("score").has("rank"))
+                    {
+                        gm.scoreRank= searchObj.getJSONObject("stats").getJSONObject(mode).
+                                getJSONObject("score").getInt("rank");
+                    }
+                }
+                if(searchObj.getJSONObject("stats").getJSONObject(mode).
+                        has("kills"))
+                {
+                    gm.kills= searchObj.getJSONObject("stats").getJSONObject(mode).
+                            getJSONObject("kills").getInt("valueInt");
+                }
+                if(searchObj.getJSONObject("stats").getJSONObject(mode).
+                        has("top1")) {
+                    gm.wins = searchObj.getJSONObject("stats").getJSONObject(mode).
+                            getJSONObject("top1").getInt("valueInt");
+                }
+                if(searchObj.getJSONObject("stats").getJSONObject(mode).
+                        has("top10"))
+                {
+                    gm.topTen= searchObj.getJSONObject("stats").getJSONObject(mode).
+                            getJSONObject("top10").getInt("valueInt");
+                    if(searchObj.getJSONObject("stats").getJSONObject(mode).
+                            getJSONObject("top10").has("rank")){
+                        gm.topTenRank= searchObj.getJSONObject("stats").getJSONObject(mode).
+                                getJSONObject("top10").getInt("rank");
+                    }
+
+                }
+                if(searchObj.getJSONObject("stats").getJSONObject(mode).
+                        has("top25"))
+                {
+                    gm.topTwentyFive = searchObj.getJSONObject("stats").getJSONObject(mode).
+                            getJSONObject("top25").getInt("valueInt");
+                }
+                if(searchObj.getJSONObject("stats").getJSONObject(mode).
+                        has("kd")) {
+                    gm.kdr = searchObj.getJSONObject("stats").getJSONObject(mode).
+                            getJSONObject("kd").getDouble("valueDec");
+                }
+                if(searchObj.getJSONObject("stats").getJSONObject(mode).
+                        has("minutesPlayed"))
+                {
+                   gm.timePlayed= searchObj.getJSONObject("stats").getJSONObject(mode).
+                            getJSONObject("minutesPlayed").getString("displayValue");
+                }
+                if(searchObj.getJSONObject("stats").getJSONObject(mode).
+                        has("kpm"))
+                {
+                    gm.killsPerMin = searchObj.getJSONObject("stats").getJSONObject(mode).
+                            getJSONObject("kpm").getInt("valueDec");
+                }
+                if(searchObj.getJSONObject("stats").getJSONObject(mode).
+                        has("kpg"))
+                {
+                    gm.killsPerMatch= searchObj.getJSONObject("stats").getJSONObject(mode).
+                            getJSONObject("kpg").getInt("valueDec");
+                }
+                if(searchObj.getJSONObject("stats").getJSONObject(mode).
+                        has("avgTimePlayed"))
+                {
+                    gm.avgMatchTime= searchObj.getJSONObject("stats").getJSONObject(mode).
+                            getJSONObject("avgTimePlayed").getString("displayValue");
+                }
+                obj.gameModeStats.add(gm);
+            }
+            Log.d(TAG, obj.epicUserHandle);
             return obj;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -105,45 +134,14 @@ public class ForniteParser{
         //return null;
     }
 
-    public static class StatObject{
-        public String accountID = "";
+    public static class  StatObject implements Serializable{
+         String accountID = "";
         public String PlatformNameLong = "";
         public String epicUserHandle= "";
-        public Solo solo = new Solo();
-        public Dou dou = new Dou();
-        public Squad squad = new Squad();
 
-        public class Solo
-        {
-            public int score = -1;
-            public int scoreRank = -1;
-            public int kills= -1;
-            public int wins= -1;
-            public int topTen= -1;
-            public int topTenRank= -1;
-            public int topTwentyFive= -1;
-            public double kdr= -1;
-            public String timePlayed= "";
-            public double killsPerMin= -1;
-            public double killsPerMatch= -1;
-            public String avgMatchTime= "";
-        }
-        public class Dou
-        {
-            public int score = -1;
-            public int scoreRank = -1;
-            public int kills= -1;
-            public int wins= -1;
-            public int topTen= -1;
-            public int topTenRank= -1;
-            public int topTwentyFive= -1;
-            public double kdr= -1;
-            public String timePlayed= "";
-            public double killsPerMin= -1;
-            public double killsPerMatch= -1;
-            public String avgMatchTime= "";
-        }
-        public class Squad
+        public static ArrayList<GameModeStats> gameModeStats = new ArrayList<GameModeStats>();
+
+        public static class GameModeStats
         {
             public int score = -1;
             public int scoreRank = -1;

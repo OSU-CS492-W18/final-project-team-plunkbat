@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 import static com.mobiledev.pubgtracker.utils.NetworkUtils.doHTTPGet;
 import com.mobiledev.pubgtracker.utils.DBHelper;
+import com.mobiledev.pubgtracker.utils.ForniteParser;
 import com.mobiledev.pubgtracker.utils.SearchContract;
 import com.mobiledev.pubgtracker.TrackAdapter;
 
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.Item
     String jsonTest;
     TrackAdapter mAdapter;
     SQLiteDatabase mDB;
-
+    ForniteParser.StatObject object = new ForniteParser.StatObject();
     EditText enteredPlayer;
 
     SearchContract mSearchContract;
@@ -70,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.Item
 
             }
         });
+
+        new trackerSearch().execute();
     }
 
     @Override
@@ -97,7 +100,15 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.Item
 
         @Override
         protected void onPostExecute(String s) {
-            Log.d(String.valueOf(this), s);
+            object = ForniteParser.Parser(s);
+            Log.d(TAG, s);
+            Log.d(TAG, "Testing name: " + object.epicUserHandle);
+            Log.d(TAG, "Testing solo win: " + String.valueOf(object.gameModeStats.get(0).wins)); //solo
+            Log.d(TAG, "Testing dou win: " + String.valueOf(object.gameModeStats.get(1).wins)); //dou
+            Log.d(TAG, "Testing squad win: " + String.valueOf(object.gameModeStats.get(2).wins)); //squad
+            Log.d(TAG, "Testing solo win: " + String.valueOf(object.gameModeStats.get(0).score)); //solo
+            Log.d(TAG, "Testing dou win: " + String.valueOf(object.gameModeStats.get(1).score)); //dou
+            Log.d(TAG, "Testing squad win: " + String.valueOf(object.gameModeStats.get(2).score)); //squad
         }
 
     }
