@@ -22,8 +22,6 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class StatsActivity extends AppCompatActivity {
-
-
     private TextView tvPlayerName;
     private TextView tvTimePlayed;
     private TextView tvAvgMatchTime;
@@ -35,7 +33,14 @@ public class StatsActivity extends AppCompatActivity {
     private TextView tvKPMin;
     private TextView tvKPMatch;
     private TextView tvScorePerMatch;
+    private TextView tvTotalMatches;
     private RadioGroup rgGameType;
+
+    //Value variables from JSON
+    private long nMatches, time, avgTime,score;
+    private int kills, wins;
+    private double killPerMin, winPercent, kdr, killPerMatch, scorePerMatch;
+    private String timePlayed, avgMatchTime;
 
     FortniteParser.StatObject mResult;
 
@@ -44,16 +49,17 @@ public class StatsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stats_activity);
 
-        tvPlayerName = (TextView)findViewById(R.id.tv_player_name);
-        tvTimePlayed = (TextView)findViewById(R.id.tv_time_played);
-        tvAvgMatchTime = (TextView)findViewById(R.id.tv_avg_match_time);
-        tvScore = (TextView)findViewById(R.id.tv_score);
-        tvWins = (TextView)findViewById(R.id.tv_wins);
-        tvWinPercent = (TextView)findViewById(R.id.tv_win_percent);
-        tvKills = (TextView)findViewById(R.id.tv_kills);
-        tvKDRatio = (TextView)findViewById(R.id.tv_kill_death);
-        tvKPMin = (TextView)findViewById(R.id.tv_kpmin);
-        tvKPMatch = (TextView)findViewById(R.id.tv_kpmatch);
+        tvPlayerName    = (TextView)findViewById(R.id.tv_player_name);
+        tvTimePlayed    = (TextView)findViewById(R.id.tv_time_played);
+        tvAvgMatchTime  = (TextView)findViewById(R.id.tv_avg_match_time);
+        tvScore         = (TextView)findViewById(R.id.tv_score);
+        tvWins          = (TextView)findViewById(R.id.tv_wins);
+        tvWinPercent    = (TextView)findViewById(R.id.tv_win_percent);
+        tvKills         = (TextView)findViewById(R.id.tv_kills);
+        tvKDRatio       = (TextView)findViewById(R.id.tv_kill_death);
+        tvKPMin         = (TextView)findViewById(R.id.tv_kpmin);
+        tvKPMatch       = (TextView)findViewById(R.id.tv_kpmatch);
+        tvTotalMatches  = (TextView)findViewById(R.id.tv_total_matches_num);
         tvScorePerMatch = (TextView)findViewById(R.id.tv_score_per_match);
 
         rgGameType = (RadioGroup)findViewById(R.id.rd_gametype);
@@ -99,38 +105,24 @@ public class StatsActivity extends AppCompatActivity {
 
         if(modeNum >= 0){
 
-            long nMatches = mResult.gameModeStats.get(modeNum).numMatches;
+            updateVars(modeNum);
 
             if(nMatches>0) {
-                long avgTime = mResult.gameModeStats.get(modeNum).avgTimeDoub;
-                long time = avgTime * nMatches;
-
-                int kills = mResult.gameModeStats.get(modeNum).kills;
-
-                Double killsPerMin = Math.round(((double)kills / time) * 1000.00) / 1000.0;
-
-                String timePlayed = String.format(
-                        "%02dD:%02dH:%02dM:%02dS",
-                        TimeUnit.SECONDS.toDays(time),
-                        TimeUnit.SECONDS.toHours(time) - TimeUnit.DAYS.toHours(TimeUnit.SECONDS.toDays(time)),
-                        TimeUnit.SECONDS.toMinutes(time) - TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(time)),
-                        TimeUnit.SECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(time)));
-
                 tvTimePlayed.setText(timePlayed);
                 Log.d("Time:", timePlayed);
-                tvAvgMatchTime.setText(mResult.gameModeStats.get(modeNum).avgMatchTime);
+                tvAvgMatchTime.setText(avgMatchTime);
                 Log.d("AvgTime:", mResult.gameModeStats.get(modeNum).avgMatchTime);
-                tvScore.setText(Integer.toString(mResult.gameModeStats.get(modeNum).score));
-                tvWins.setText(Integer.toString(mResult.gameModeStats.get(modeNum).wins));
-                tvWinPercent.setText(Double.toString((mResult.gameModeStats.get(modeNum).wins)/(nMatches)));
+                tvScore.setText(Long.toString(score));
+                tvWins.setText(Integer.toString(wins));
+                tvWinPercent.setText(Double.toString(winPercent));
                 tvKills.setText(Integer.toString(kills));
-                tvKDRatio.setText(Double.toString(mResult.gameModeStats.get(modeNum).kdr));
-                tvKPMin.setText(Double.toString(killsPerMin));
-                tvKPMatch.setText(Double.toString(mResult.gameModeStats.get(modeNum).killsPerMatch));
-                tvScorePerMatch.setText(Integer.toString(mResult.gameModeStats.get(modeNum).score));
+                tvKDRatio.setText(Double.toString(kdr));
+                tvKPMin.setText(Double.toString(killPerMin));
+                tvKPMatch.setText(Double.toString(killPerMatch));
+                tvTotalMatches.setText(Long.toString(nMatches));
+                tvScorePerMatch.setText(Double.toString(scorePerMatch));
             } else {
                 long time = 0;
-
                 String timePlayed = String.format(
                         "%02dD:%02dH:%02dM:%02dS",
                         TimeUnit.SECONDS.toDays(time),
@@ -149,6 +141,7 @@ public class StatsActivity extends AppCompatActivity {
                 tvKDRatio.setText("N/A");
                 tvKPMin.setText("N/A");
                 tvKPMatch.setText("N/A");
+                tvTotalMatches.setText("N/A");
                 tvScorePerMatch.setText("N/A");
             }
         }
@@ -190,47 +183,29 @@ public class StatsActivity extends AppCompatActivity {
             int modeNum = getModeNum(checkButton());
 
             if (modeNum >= 0) {
-
-                long nMatches = mResult.gameModeStats.get(modeNum).numMatches;
+                String shareText;
 
                 if (nMatches > 0) {
-                    long avgTime = mResult.gameModeStats.get(modeNum).avgTimeDoub;
-                    long time = avgTime * nMatches;
-
-                    double kills = mResult.gameModeStats.get(modeNum).kills;
-
-                    Double killsPerMin = Math.round((kills / time) * 1000.00) / 1000.0;
-
-                    String timePlayed = String.format(
-                            "%02dD:%02dH:%02dM:%02dS",
-                            TimeUnit.SECONDS.toDays(time),
-                            TimeUnit.SECONDS.toHours(time) - TimeUnit.DAYS.toHours(TimeUnit.SECONDS.toDays(time)),
-                            TimeUnit.SECONDS.toMinutes(time) - TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(time)),
-                            TimeUnit.SECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(time)));
-
-                    String avgMatchTime = mResult.gameModeStats.get(modeNum).avgMatchTime;
-//                    long score = mResult.gameModeStats.get(modeNum).score;
-                    int wins = mResult.gameModeStats.get(modeNum).wins;
-                    double winPercent = mResult.gameModeStats.get(modeNum).wins / nMatches;
-//                    int kills = mResult.gameModeStats.get(modeNum).kills;
-                    double kdr = mResult.gameModeStats.get(modeNum).kdr;
-                    double killsPerMatch = mResult.gameModeStats.get(modeNum).killsPerMatch;
-                    long score = mResult.gameModeStats.get(modeNum).score;
-
-
-                    String shareText = getString(R.string.share_text_prefix) + " - \n" +
+                    shareText = getString(R.string.share_text_prefix) + " - \n" +
                             mResult.epicUserHandle + " playing " + checkButton() +" on " + mResult.PlatformNameLong + ": \n" +
                             "Wins: "+wins+"/WinPct: "+winPercent+"/ModeScore: "+score+"\n"+
-                            "Kills: "+kills+"/KillsMatch: "+killsPerMatch+"/KDR: "+kdr+"\n"+
+                            "Kills: "+kills+"/KillsMatch: "+killPerMatch+"/KDR: "+kdr+"\n"+
                             "AvgMatchTime: "+avgMatchTime;
 
-
-                    ShareCompat.IntentBuilder.from(this)
-                            .setChooserTitle(R.string.share_app_choose_titlebar)
-                            .setType("text/plain" )
-                            .setText(shareText)
-                            .startChooser();
+                } else {
+                    shareText = getString(R.string.share_text_prefix) + " - \n" +
+                            mResult.epicUserHandle + " playing " + checkButton() +" on " + mResult.PlatformNameLong + ": \n" +
+                            "Wins: 0"+"/WinPct: 0.0"+"/ModeScore: 0\n"+
+                            "Kills: 0"+"/KillsMatch: 0.0"+"/KDR: 0.0\n"+
+                            "AvgMatchTime: 0s";
                 }
+
+                ShareCompat.IntentBuilder.from(this)
+                        .setChooserTitle(R.string.share_app_choose_titlebar)
+                        .setType("text/plain" )
+                        .setText(shareText)
+                        .startChooser();
+
             }
         }
     }
@@ -253,5 +228,26 @@ public class StatsActivity extends AppCompatActivity {
         }
 
         return modeNum;
+    }
+
+    private void updateVars(int modeNum) {
+        nMatches        = mResult.gameModeStats.get(modeNum).numMatches;
+        avgTime         = mResult.gameModeStats.get(modeNum).avgTimeDoub;
+        time            = avgTime * nMatches;
+        score           = mResult.gameModeStats.get(modeNum).score;
+        kills           = mResult.gameModeStats.get(modeNum).kills;
+        wins            = mResult.gameModeStats.get(modeNum).wins;
+        killPerMin      = Math.round((kills / time) * 1000.00) / 1000.0;
+        winPercent      = mResult.gameModeStats.get(modeNum).wins / nMatches;
+        kdr             = mResult.gameModeStats.get(modeNum).kdr;
+        killPerMatch    = mResult.gameModeStats.get(modeNum).killsPerMatch;
+        scorePerMatch   = mResult.gameModeStats.get(modeNum).scorePerMatch;
+        avgMatchTime    = mResult.gameModeStats.get(modeNum).avgMatchTime;
+        timePlayed      = String.format(
+                "%02dD:%02dH:%02dM:%02dS",
+                TimeUnit.SECONDS.toDays(time),
+                TimeUnit.SECONDS.toHours(time) - TimeUnit.DAYS.toHours(TimeUnit.SECONDS.toDays(time)),
+                TimeUnit.SECONDS.toMinutes(time) - TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(time)),
+                TimeUnit.SECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(time)));
     }
 }

@@ -66,6 +66,13 @@ public class FortniteParser {
                         gm.kills = searchObj.getJSONObject("stats").getJSONObject(mode).
                                 getJSONObject("kills").getInt("valueInt");
                     }
+
+                    if (searchObj.getJSONObject("stats").getJSONObject(mode).
+                            has("scorePerMatch")) {
+                        gm.scorePerMatch = searchObj.getJSONObject("stats").getJSONObject(mode).
+                                getJSONObject("scorePerMatch").getDouble("valueDec");
+                    }
+
                     if (searchObj.getJSONObject("stats").getJSONObject(mode).
                             has("top1")) {
                         gm.wins = searchObj.getJSONObject("stats").getJSONObject(mode).
@@ -161,6 +168,7 @@ public class FortniteParser {
             public String avgMatchTime= "-1";
             public int numMatches = -1;
             public long avgTimeDoub = -1;
+            public double scorePerMatch = -1;
         }
     }
 

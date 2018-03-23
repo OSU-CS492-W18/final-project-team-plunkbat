@@ -21,6 +21,7 @@
     <string name="username">Player:</string>
     <string name="score">Score:</string>
     <string name="kills">Kills:</string>
+    <string name="num_matches">Matches:</string>
     <string name="wins">Wins:</string>
     <string name="kill_death">K/D:</string>
     <string name="win_percent">Win %:</string>
