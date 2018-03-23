@@ -46,80 +46,73 @@ public class ForniteParser{
                     mode = "p10";
                     modeClass = "dou";
                 }
-                if(i ==2)
+                if(i == 2)
                 {
                     mode = "p9";
                     modeClass = "squad";
                 }
-                if(searchObj.getJSONObject("stats").getJSONObject(mode).
-                        has("score"))
-                {
-                    gm.score = searchObj.getJSONObject("stats").getJSONObject(mode).
-                            getJSONObject("score").getInt("valueInt");
-                    if(searchObj.getJSONObject("stats").getJSONObject(mode).
-                            getJSONObject("score").has("rank"))
-                    {
-                        gm.scoreRank= searchObj.getJSONObject("stats").getJSONObject(mode).
-                                getJSONObject("score").getInt("rank");
+                if(searchObj.getJSONObject("stats").has(mode)) {
+                    if (searchObj.getJSONObject("stats").getJSONObject(mode).
+                            has("score")) {
+                        gm.score = searchObj.getJSONObject("stats").getJSONObject(mode).
+                                getJSONObject("score").getInt("valueInt");
+                        if (searchObj.getJSONObject("stats").getJSONObject(mode).
+                                getJSONObject("score").has("rank")) {
+                            gm.scoreRank = searchObj.getJSONObject("stats").getJSONObject(mode).
+                                    getJSONObject("score").getInt("rank");
+                        }
                     }
-                }
-                if(searchObj.getJSONObject("stats").getJSONObject(mode).
-                        has("kills"))
-                {
-                    gm.kills= searchObj.getJSONObject("stats").getJSONObject(mode).
-                            getJSONObject("kills").getInt("valueInt");
-                }
-                if(searchObj.getJSONObject("stats").getJSONObject(mode).
-                        has("top1")) {
-                    gm.wins = searchObj.getJSONObject("stats").getJSONObject(mode).
-                            getJSONObject("top1").getInt("valueInt");
-                }
-                if(searchObj.getJSONObject("stats").getJSONObject(mode).
-                        has("top10"))
-                {
-                    gm.topTen= searchObj.getJSONObject("stats").getJSONObject(mode).
-                            getJSONObject("top10").getInt("valueInt");
-                    if(searchObj.getJSONObject("stats").getJSONObject(mode).
-                            getJSONObject("top10").has("rank")){
-                        gm.topTenRank= searchObj.getJSONObject("stats").getJSONObject(mode).
-                                getJSONObject("top10").getInt("rank");
+                    if (searchObj.getJSONObject("stats").getJSONObject(mode).
+                            has("kills")) {
+                        gm.kills = searchObj.getJSONObject("stats").getJSONObject(mode).
+                                getJSONObject("kills").getInt("valueInt");
                     }
+                    if (searchObj.getJSONObject("stats").getJSONObject(mode).
+                            has("top1")) {
+                        gm.wins = searchObj.getJSONObject("stats").getJSONObject(mode).
+                                getJSONObject("top1").getInt("valueInt");
+                    }
+                    if (searchObj.getJSONObject("stats").getJSONObject(mode).
+                            has("top10")) {
+                        gm.topTen = searchObj.getJSONObject("stats").getJSONObject(mode).
+                                getJSONObject("top10").getInt("valueInt");
+                        if (searchObj.getJSONObject("stats").getJSONObject(mode).
+                                getJSONObject("top10").has("rank")) {
+                            gm.topTenRank = searchObj.getJSONObject("stats").getJSONObject(mode).
+                                    getJSONObject("top10").getInt("rank");
+                        }
 
-                }
-                if(searchObj.getJSONObject("stats").getJSONObject(mode).
-                        has("top25"))
-                {
-                    gm.topTwentyFive = searchObj.getJSONObject("stats").getJSONObject(mode).
-                            getJSONObject("top25").getInt("valueInt");
-                }
-                if(searchObj.getJSONObject("stats").getJSONObject(mode).
-                        has("kd")) {
-                    gm.kdr = searchObj.getJSONObject("stats").getJSONObject(mode).
-                            getJSONObject("kd").getDouble("valueDec");
-                }
-                if(searchObj.getJSONObject("stats").getJSONObject(mode).
-                        has("minutesPlayed"))
-                {
-                   gm.timePlayed= searchObj.getJSONObject("stats").getJSONObject(mode).
-                            getJSONObject("minutesPlayed").getString("displayValue");
-                }
-                if(searchObj.getJSONObject("stats").getJSONObject(mode).
-                        has("kpm"))
-                {
-                    gm.killsPerMin = searchObj.getJSONObject("stats").getJSONObject(mode).
-                            getJSONObject("kpm").getInt("valueDec");
-                }
-                if(searchObj.getJSONObject("stats").getJSONObject(mode).
-                        has("kpg"))
-                {
-                    gm.killsPerMatch= searchObj.getJSONObject("stats").getJSONObject(mode).
-                            getJSONObject("kpg").getInt("valueDec");
-                }
-                if(searchObj.getJSONObject("stats").getJSONObject(mode).
-                        has("avgTimePlayed"))
-                {
-                    gm.avgMatchTime= searchObj.getJSONObject("stats").getJSONObject(mode).
-                            getJSONObject("avgTimePlayed").getString("displayValue");
+                    }
+                    if (searchObj.getJSONObject("stats").getJSONObject(mode).
+                            has("top25")) {
+                        gm.topTwentyFive = searchObj.getJSONObject("stats").getJSONObject(mode).
+                                getJSONObject("top25").getInt("valueInt");
+                    }
+                    if (searchObj.getJSONObject("stats").getJSONObject(mode).
+                            has("kd")) {
+                        gm.kdr = searchObj.getJSONObject("stats").getJSONObject(mode).
+                                getJSONObject("kd").getDouble("valueDec");
+                    }
+                    if (searchObj.getJSONObject("stats").getJSONObject(mode).
+                            has("minutesPlayed")) {
+                        gm.timePlayed = searchObj.getJSONObject("stats").getJSONObject(mode).
+                                getJSONObject("minutesPlayed").getString("displayValue");
+                    }
+                    if (searchObj.getJSONObject("stats").getJSONObject(mode).
+                            has("kpm")) {
+                        gm.killsPerMin = searchObj.getJSONObject("stats").getJSONObject(mode).
+                                getJSONObject("kpm").getInt("valueDec");
+                    }
+                    if (searchObj.getJSONObject("stats").getJSONObject(mode).
+                            has("kpg")) {
+                        gm.killsPerMatch = searchObj.getJSONObject("stats").getJSONObject(mode).
+                                getJSONObject("kpg").getInt("valueDec");
+                    }
+                    if (searchObj.getJSONObject("stats").getJSONObject(mode).
+                            has("avgTimePlayed")) {
+                        gm.avgMatchTime = searchObj.getJSONObject("stats").getJSONObject(mode).
+                                getJSONObject("avgTimePlayed").getString("displayValue");
+                    }
                 }
                 obj.gameModeStats.add(gm);
             }

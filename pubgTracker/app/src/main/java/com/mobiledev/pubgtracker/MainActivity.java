@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.Item
     private static final String TAG = MainActivity.class.getSimpleName();
 
     String apiKey = "5cacd83e-3861-42ff-a981-c0c1a81ff6c4";
-    String URLTest = "https://api.fortnitetracker.com/v1/profile/pc/AlexRamiGaming";
+    String URLTest = "https://api.fortnitetracker.com/v1/profile/pc/CelticChristoph";
     String jsonTest;
     TrackAdapter mAdapter;
     SQLiteDatabase mDB;
@@ -60,19 +60,11 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.Item
                 String searchQuery = enteredPlayer.getText().toString();
 
                 if (!TextUtils.isEmpty(searchQuery)) {
-                    //new trackerSearch().execute();
-                    // Check if the query returned anything before adding it to the DB
-                    ContentValues row = new ContentValues();
-                    row.put(SearchContract.SavedRepos.COLUMN_FULL_NAME, searchQuery);
-                    mDB.insert(SearchContract.SavedRepos.TABLE_NAME, null, row);
-                    //Intent statsIntent = new Intent(MainActivity.this, StatsActivity.class);
-                    //startActivity(statsIntent);
+                    new trackerSearch().execute();
                 }
 
             }
         });
-
-        new trackerSearch().execute();
     }
 
     @Override
@@ -101,6 +93,14 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.Item
         @Override
         protected void onPostExecute(String s) {
             object = ForniteParser.Parser(s);
+
+            // Check if the query returned anything before adding it to the DB
+            ContentValues row = new ContentValues();
+            row.put(SearchContract.SavedRepos.COLUMN_FULL_NAME, object.epicUserHandle);
+            mDB.insert(SearchContract.SavedRepos.TABLE_NAME, null, row);
+            Intent statsIntent = new Intent(MainActivity.this, StatsActivity.class);
+            startActivity(statsIntent);
+
             Log.d(TAG, s);
             Log.d(TAG, "Testing name: " + object.epicUserHandle);
             Log.d(TAG, "Testing solo win: " + String.valueOf(object.gameModeStats.get(0).wins)); //solo
